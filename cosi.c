@@ -34,6 +34,14 @@ void Cosigners_Init(Cosigners* cosigners, byte** publicKeys, size_t n_keys, byte
     ExtendedGroupElement_Zero(&cosigners->aggr);
     Cosigners_SetMask(cosigners, mask, mask_len);
 }
+
+void Cosigners_Deinit(Cosigners* cosigners) {
+    free(cosigners->keys);
+    cosigners->keys = NULL;
+    free(cosigners->mask);
+    cosigners->mask = NULL;
+}
+
 unsigned int Cosigners_CountTotal(Cosigners* cosigners) {
     return cosigners->n_keys;
 }
@@ -195,6 +203,8 @@ bool Cosigners_verify(Cosigners* cosigners, byte* message, size_t message_len, b
 
     SHA512(tohash, l, digest);
 
+    free(tohash);
+
 	byte hReduced[32];
 	ScReduce(hReduced, digest);
 	// The public key used for checking is whichever part was signed
@@ -279,5 +289,7 @@ bool VerifyCosignature(byte** publicKeys, size_t n_keys, unsigned int threshold,
     Cosigners cosi;
     Cosigners_Init(&cosi, publicKeys, n_keys, &signature[64], signature_len-SignatureSize);
     Cosigners_SetThresold(&cosi, threshold);
-	return Cosigners_Verify(&cosi, message, message_len, signature, signature_len);
+	bool ok = Cosigners_Verify(&cosi, message, message_len, signature, signature_len);
+    Cosigners_Deinit(&cosi);
+    return ok;
 }

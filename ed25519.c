@@ -114,6 +114,7 @@ bool Verify(byte* publicKey, byte* message, size_t message_len, byte* sig) {
 	byte digest[64];
 
     SHA512(tohash, 32+PublicKeySize+message_len, digest);
+    free(tohash);
 
 	byte hReduced[32];
 	ScReduce(hReduced, digest);

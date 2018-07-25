@@ -27,6 +27,7 @@ typedef struct Secret_t {
 } Secret;
 
 void Cosigners_Init(Cosigners* cosigners, byte** publicKeys, size_t n_keys, byte* mask, size_t mask_len);
+void Cosigners_Deinit(Cosigners* cosigners);
 unsigned int Cosigners_CountTotal(Cosigners* cosigners);
 unsigned int Cosigners_CountEnabled(Cosigners* cosigners);
 void Cosigners_SetMask(Cosigners* cosigners, byte* mask, size_t mask_len);
