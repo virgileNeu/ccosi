@@ -27,7 +27,10 @@ void init_bench() {
         commitments[i] = malloc(CommitmentSize);
         parts[i] = malloc(SignaturePartSize);
     }
+}
 
+static double time_to_seconds(struct timespec* ts) {
+    return (double)ts->tv_sec + (double)ts->tv_nsec / 1000000000.0;
 }
 
 void start_bench() {
@@ -61,7 +64,7 @@ void start_bench() {
     }
     struct timespec end_sign_time;
     clock_gettime(CLOCK_MONOTONIC, &end_sign_time);
-    printf("cosigning: %ld ns\n", end_sign_time.tv_nsec - start_sign_time.tv_nsec);
+    printf("cosigning: %lf s\n", time_to_seconds(&end_sign_time) - time_to_seconds(&start_sign_time));
     struct timespec start_verif_time;
     clock_gettime(CLOCK_MONOTONIC, &start_verif_time);
 	for(int i = 0; i < n; i++) {
@@ -69,7 +72,7 @@ void start_bench() {
     }
     struct timespec end_verif_time;
     clock_gettime(CLOCK_MONOTONIC, &end_verif_time);
-    printf("Verifying: %ld ns\n", end_verif_time.tv_nsec - start_verif_time.tv_nsec);
+    printf("Verifying: %lf s\n", time_to_seconds(&end_verif_time) - time_to_seconds(&start_verif_time));
     free(cosignature);
     Cosigners_Deinit(&cosigners);
 }
